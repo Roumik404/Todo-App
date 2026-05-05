@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="greetingPage" class="splash">
+        <div class="splash-bg">
+            <div class="blob blob1"></div>
+            <div class="blob blob2"></div>
+            <div class="blob blob3"></div>
+        </div>
+        <div class="splash-card">
+            <div class="splash-logo">
+                <div class="logo-ring"></div>
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h1>TaskMaster<span>Pro</span></h1>
+            <p>Your intelligent productivity command center</p>
+            <div class="splash-features">
+                <div class="sf"><i class="fas fa-chart-bar"></i> Analytics</div>
+                <div class="sf"><i class="fas fa-clock"></i> Pomodoro</div>
+                <div class="sf"><i class="fas fa-fire"></i> Streaks</div>
+            </div>
+            <button id="continueBtn" class="splash-btn">
+                <span>Launch App</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-bolt"></i>
+                <span>TaskMaster</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-panel="dashboard">
+                    <i class="fas fa-home"></i><span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-panel="tasks">
+                    <i class="fas fa-list-check"></i><span>Tasks</span>
+                </button>
+                <button class="nav-item" data-panel="analytics">
+                    <i class="fas fa-chart-bar"></i><span>Analytics</span>
+                </button>
+                <button class="nav-item" data-panel="pomodoro">
+                    <i class="fas fa-clock"></i><span>Pomodoro</span>
+                </button>
+            </nav>
+            <div class="sidebar-bottom">
+                <button id="themeToggle" class="theme-btn">
+                    <i class="fas fa-moon"></i><span>Dark Mode</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <div class="topbar">
+                <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+                <div class="topbar-title" id="topbarTitle">Dashboard</div>
+                <div class="topbar-actions">
+                    <div class="streak-badge" id="streakBadge">
+                        <i class="fas fa-fire"></i>
+                        <span id="streakCount">0</span> day streak
+                    </div>
+                    <button class="export-btn" id="exportBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== DASHBOARD PANEL ===== -->
+            <div class="panel active" id="panel-dashboard">
+                <div class="greeting-bar">
+                    <div>
+                        <h2 id="greetingText">Good morning! 👋</h2>
+                        <p id="greetingDate"></p>
+                    </div>
+                    <div class="quick-add-trigger" id="quickAddTrigger">
+                        <i class="fas fa-plus"></i> Quick Add Task
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-tile primary">
+                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-num" id="totalTasks">0</div>
+                            <div class="stat-lbl">Total Tasks</div>
+                        </div>
+                        <div class="stat-trend" id="trendTotal"></div>
+                    </div>
+                    <div class="stat-tile success">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-num" id="completedTasks">0</div>
+                            <div class="stat-lbl">Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-tile warning">
+                        <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-num" id="pendingTasks">0</div>
+                            <div class="stat-lbl">Pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-tile danger">
+                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-num" id="overdueTasks">0</div>
+                            <div class="stat-lbl">Overdue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Ring + Recent -->
+                <div class="dashboard-row">
+                    <div class="progress-card">
+                        <h3>Completion Rate</h3>
+                        <div class="ring-wrap">
+                            <svg class="ring-svg" viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314" stroke-dashoffset="314"/>
+                            </svg>
+                            <div class="ring-text">
+                                <span class="ring-pct" id="ringPct">0%</span>
+                                <span class="ring-sub">done</span>
+                            </div>
+                        </div>
+                        <div class="progress-breakdown">
+                            <div class="pb-item"><span class="dot high"></span>High Priority <b id="highCount">0</b></div>
+                            <div class="pb-item"><span class="dot med"></span>Medium <b id="medCount">0</b></div>
+                            <div class="pb-item"><span class="dot low"></span>Low <b id="lowCount">0</b></div>
+                        </div>
+                    </div>
+
+                    <div class="recent-card">
+                        <h3>Today's Focus <span class="badge-count" id="todayCount">0</span></h3>
+                        <div id="todayTasks" class="today-list"></div>
+                        <div class="mini-chart-wrap">
+                            <h4>This Week</h4>
+                            <canvas id="weekMiniChart" height="80"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category breakdown -->
+                <div class="cat-breakdown">
+                    <h3>By Category</h3>
+                    <div id="catBars" class="cat-bars"></div>
+                </div>
+            </div>
+
+            <!-- ===== TASKS PANEL ===== -->
+            <div class="panel" id="panel-tasks">
+                <!-- Add Task Form -->
+                <div class="add-form-card">
+                    <div class="form-title"><i class="fas fa-plus-circle"></i> Add New Task</div>
+                    <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input">
+                    <div class="form-row">
+                        <select id="prioritySelect">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium" selected>🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                        <select id="categorySelect">
+                            <option value="work">💼 Work</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="shopping">🛒 Shopping</option>
+                            <option value="health">💪 Health</option>
+                            <option value="other">📌 Other</option>
+                        </select>
+                        <input type="date" id="dueDateInput" class="date-input">
+                        <button id="addBtn" class="add-btn"><i class="fas fa-plus"></i> Add Task</button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <div class="search-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search tasks...">
+                    </div>
+                    <div class="filter-chips">
+                        <select id="filterPriority">
+                            <option value="all">All Priorities</option>
+                            <option value="high">🔴 High</option>
+                            <option value="medium">🟡 Medium</option>
+                            <option value="low">🟢 Low</option>
+                        </select>
+                        <select id="filterCategory">
+                            <option value="all">All Categories</option>
+                            <option value="work">💼 Work</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="shopping">🛒 Shopping</option>
+                            <option value="health">💪 Health</option>
+                            <option value="other">📌 Other</option>
+                        </select>
+                        <select id="filterStatus">
+                            <option value="all">All Status</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="completed">✅ Completed</option>
+                        </select>
+                        <select id="sortSelect">
+                            <option value="default">Sort: Default</option>
+                            <option value="date">Sort: Due Date</option>
+                            <option value="priority">Sort: Priority</option>
+                            <option value="category">Sort: Category</option>
+                        </select>
+                    </div>
+                    <button id="clearCompletedBtn" class="clear-btn">
+                        <i class="fas fa-trash-alt"></i> Clear Done
+                    </button>
+                </div>
+
+                <!-- Task List -->
+                <div id="todoList" class="todo-list"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-illustration">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <p>No tasks found</p>
+                    <small>Add a task or adjust your filters</small>
+                </div>
+            </div>
+
+            <!-- ===== ANALYTICS PANEL ===== -->
+            <div class="panel" id="panel-analytics">
+                <div class="analytics-header">
+                    <h2>Productivity Analytics</h2>
+                    <div class="time-tabs">
+                        <button class="tt active" data-range="7">7 Days</button>
+                        <button class="tt" data-range="14">14 Days</button>
+                        <button class="tt" data-range="30">30 Days</button>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <!-- Completion Chart -->
+                    <div class="chart-card wide">
+                        <div class="chart-header">
+                            <div>
+                                <h4>Tasks Completed Over Time</h4>
+                                <p class="chart-sub" id="chartSub">Last 7 days</p>
+                            </div>
+                            <div class="chart-legend">
+                                <span><span class="leg-dot completed-dot"></span>Completed</span>
+                                <span><span class="leg-dot added-dot"></span>Added</span>
+                            </div>
+                        </div>
+                        <canvas id="completionChart" height="180"></canvas>
+                    </div>
+
+                    <!-- Priority donut -->
+                    <div class="chart-card">
+                        <h4>Priority Breakdown</h4>
+                        <div class="donut-wrap">
+                            <canvas id="priorityChart" height="180"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Category donut -->
+                    <div class="chart-card">
+                        <h4>Category Distribution</h4>
+                        <div class="donut-wrap">
+                            <canvas id="categoryChart" height="180"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Productivity Score -->
+                    <div class="chart-card score-card">
+                        <h4>Productivity Score</h4>
+                        <div class="score-display">
+                            <div class="score-num" id="prodScore">—</div>
+                            <div class="score-grade" id="prodGrade">N/A</div>
+                        </div>
+                        <div class="score-breakdown">
+                            <div class="sb-row">
+                                <span>Completion Rate</span>
+                                <span id="sb-comp">0%</span>
+                            </div>
+                            <div class="sb-row">
+                                <span>On-time Rate</span>
+                                <span id="sb-ontime">0%</span>
+                            </div>
+                            <div class="sb-row">
+                                <span>High Priority Done</span>
+                                <span id="sb-high">0%</span>
+                            </div>
+                            <div class="sb-row">
+                                <span>Current Streak</span>
+                                <span id="sb-streak">0 days</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap -->
+                    <div class="chart-card wide heatmap-card">
+                        <h4>Activity Heatmap <small>(last 28 days)</small></h4>
+                        <div id="heatmap" class="heatmap"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== POMODORO PANEL ===== -->
+            <div class="panel" id="panel-pomodoro">
+                <div class="pomodoro-wrap">
+                    <div class="pomo-left">
+                        <div class="pomo-card">
+                            <div class="pomo-mode-tabs">
+                                <button class="pomo-tab active" data-mode="work">Focus</button>
+                                <button class="pomo-tab" data-mode="short">Short Break</button>
+                                <button class="pomo-tab" data-mode="long">Long Break</button>
+                            </div>
+
+                            <div class="pomo-timer-display">
+                                <div class="pomo-ring">
+                                    <svg viewBox="0 0 200 200">
+                                        <circle class="pr-bg" cx="100" cy="100" r="88"/>
+                                        <circle class="pr-fill" id="pomoRingFill" cx="100" cy="100" r="88"
+                                            stroke-dasharray="553" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <div class="pomo-time" id="pomoDisplay">25:00</div>
+                                </div>
+                            </div>
+
+                            <div class="pomo-controls">
+                                <button class="pomo-ctrl" id="pomoReset"><i class="fas fa-undo"></i></button>
+                                <button class="pomo-play" id="pomoStartStop">
+                                    <i class="fas fa-play" id="pomoIcon"></i>
+                                </button>
+                                <button class="pomo-ctrl" id="pomoSkip"><i class="fas fa-forward-step"></i></button>
+                            </div>
+
+                            <div class="pomo-sessions">
+                                <div id="pomoDots" class="pomo-dots"></div>
+                                <p>Session <span id="pomoSession">1</span> of 4</p>
+                            </div>
+
+                            <div class="pomo-settings">
+                                <div class="ps-row">
+                                    <label>Focus (min)</label>
+                                    <input type="number" id="focusTime" value="25" min="1" max="60">
+                                </div>
+                                <div class="ps-row">
+                                    <label>Short Break</label>
+                                    <input type="number" id="shortTime" value="5" min="1" max="30">
+                                </div>
+                                <div class="ps-row">
+                                    <label>Long Break</label>
+                                    <input type="number" id="longTime" value="15" min="1" max="60">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pomo-right">
+                        <div class="pomo-task-card">
+                            <h3><i class="fas fa-crosshairs"></i> Current Focus</h3>
+                            <div id="pomoCurrentTask" class="pomo-current-task">
+                                <div class="no-task-msg">No task selected</div>
+                            </div>
+                        </div>
+                        <div class="pomo-task-card">
+                            <h3><i class="fas fa-list"></i> Pick a Task</h3>
+                            <div id="pomoTaskList" class="pomo-task-list"></div>
+                        </div>
+                        <div class="pomo-stats-card">
+                            <h3><i class="fas fa-chart-simple"></i> Today's Pomodoros</h3>
+                            <div class="pomo-today-stats">
+                                <div class="pts-item">
+                                    <div class="pts-num" id="pomosToday">0</div>
+                                    <div class="pts-lbl">Sessions</div>
+                                </div>
+                                <div class="pts-item">
+                                    <div class="pts-num" id="focusMinutes">0m</div>
+                                    <div class="pts-lbl">Focus Time</div>
+                                </div>
+                                <div class="pts-item">
+                                    <div class="pts-num" id="pomoTotal">0</div>
+                                    <div class="pts-lbl">All Time</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-pen"></i> Edit Task</h3>
+                <button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="editTaskInput" placeholder="Task name" class="modal-input">
+                <div class="modal-row">
+                    <select id="editPriority" class="modal-select">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                    </select>
+                    <select id="editCategory" class="modal-select">
+                        <option value="work">💼 Work</option>
+                        <option value="personal">🏠 Personal</option>
+                        <option value="shopping">🛒 Shopping</option>
+                        <option value="health">💪 Health</option>
+                        <option value="other">📌 Other</option>
+                    </select>
+                </div>
+                <input type="date" id="editDueDate" class="modal-input">
+                <textarea id="editNotes" class="modal-textarea" placeholder="Add notes (optional)..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="saveEditBtn" class="btn-save"><i class="fas fa-check"></i> Save</button>
+                <button id="cancelEditBtn" class="btn-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Undo Toast -->
+    <div id="undoToast" class="undo-toast hidden">
+        <span id="undoMsg">Task deleted</span>
+        <button id="undoBtn"><i class="fas fa-rotate-left"></i> Undo</button>
+    </div>
+
+    <!-- Keyboard Shortcuts Panel -->
+    <div id="shortcutsPanel" class="shortcuts-panel hidden">
+        <div class="shortcuts-card">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcut-list">
+                <div class="shortcut-item"><kbd>N</kbd> New Task</div>
+                <div class="shortcut-item"><kbd>T</kbd> Tasks Panel</div>
+                <div class="shortcut-item"><kbd>A</kbd> Analytics</div>
+                <div class="shortcut-item"><kbd>P</kbd> Pomodoro</div>
+                <div class="shortcut-item"><kbd>D</kbd> Dashboard</div>
+                <div class="shortcut-item"><kbd>Space</kbd> Start/Stop Timer</div>
+                <div class="shortcut-item"><kbd>?</kbd> Toggle Shortcuts</div>
+                <div class="shortcut-item"><kbd>Esc</kbd> Close Modals</div>
+            </div>
+            <button id="closeShortcuts"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <div id="confettiCanvas" class="confetti-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
