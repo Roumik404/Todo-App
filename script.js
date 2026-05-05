@@ -1,7 +1,3 @@
-// =============================================
-//   TASKMASTER PRO — Upgraded Script
-// =============================================
-
 // ===== STATE =====
 let tasks = JSON.parse(localStorage.getItem('tm_tasks')) || [];
 let currentEditId = null;
