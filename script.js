@@ -1,3 +1,7 @@
+// =============================================
+//   TASKMASTER PRO — Upgraded Script
+// =============================================
+
 // ===== STATE =====
 let tasks = JSON.parse(localStorage.getItem('tm_tasks')) || [];
 let currentEditId = null;
@@ -59,7 +63,7 @@ function init() {
 // ===== GREETING =====
 function updateGreeting() {
     const hour = new Date().getHours();
-    let greet = hour < 12 ? 'Good morning! 👋' : hour < 17 ? 'Good afternoon! ☀️' : 'Good evening! 🌙';
+    let greet = hour < 12 ? 'Good morning!' : hour < 17 ? 'Good afternoon!' : 'Good evening!';
     const el = $('greetingText');
     if (el) el.textContent = greet;
 
@@ -229,7 +233,7 @@ function renderCatBars() {
     const el = $('catBars');
     if (!el) return;
     const cats = ['work', 'personal', 'shopping', 'health', 'other'];
-    const icons = { work: '💼', personal: '🏠', shopping: '🛒', health: '💪', other: '📌' };
+    const icons = { work: 'fa-briefcase', personal: 'fa-house', shopping: 'fa-cart-shopping', health: 'fa-heart-pulse', other: 'fa-tag' };
     const colors = { work: '#5b4fcf', personal: '#22c98e', shopping: '#f5a623', health: '#f04b6b', other: '#7b82a0' };
     const max = Math.max(...cats.map(c => tasks.filter(t => t.category === c).length), 1);
 
@@ -238,7 +242,7 @@ function renderCatBars() {
         const pct = Math.round((count / max) * 100);
         return `
             <div class="cat-bar-row">
-                <div class="cat-bar-label">${icons[c]} ${c}</div>
+                <div class="cat-bar-label"><i class="fas ${icons[c]}"></i> ${c}</div>
                 <div class="cat-bar-track">
                     <div class="cat-bar-fill" style="width:${pct}%;background:${colors[c]}"></div>
                 </div>
@@ -270,7 +274,7 @@ function renderWeekMini() {
             labels,
             datasets: [{
                 data,
-                backgroundColor: 'rgba(91,79,207,0.6)',
+                backgroundColor: 'rgba(91,79,207,0.65)',
                 borderRadius: 4,
                 borderSkipped: false
             }]
@@ -331,7 +335,11 @@ function renderTasks() {
         let dueBadge = '';
         if (task.dueDate) {
             const cls = overdue ? 'overdue' : todayFlag ? 'today' : '';
-            const label = overdue ? '⚠️ Overdue' : todayFlag ? '📅 Today' : '📅 ' + formatDate(task.dueDate);
+            const label = overdue
+                ? '<i class="fas fa-triangle-exclamation"></i> Overdue'
+                : todayFlag
+                    ? '<i class="fas fa-calendar-day"></i> Today'
+                    : '<i class="fas fa-calendar"></i> ' + formatDate(task.dueDate);
             dueBadge = `<span class="task-due ${cls}">${label}</span>`;
         }
         return `
@@ -343,7 +351,7 @@ function renderTasks() {
                     <span class="badge badge-${task.priority}">${getPrioLabel(task.priority)}</span>
                     <span class="badge badge-cat">${getCatLabel(task.category)}</span>
                     ${dueBadge}
-                    ${task.notes ? `<span class="task-due" title="${escapeHtml(task.notes)}"><i class="fas fa-note-sticky"></i></span>` : ''}
+                    ${task.notes ? `<span class="task-due" title="${escapeHtml(task.notes)}"><i class="fas fa-note-sticky"></i> Note</span>` : ''}
                 </div>
             </div>
             <div class="task-actions">
@@ -589,8 +597,8 @@ function renderCompletionChart() {
                 {
                     label: 'Added',
                     data: added,
-                    borderColor: '#22c98e',
-                    backgroundColor: 'rgba(34,201,142,0.07)',
+                    borderColor: '#16a96e',
+                    backgroundColor: 'rgba(22,169,110,0.07)',
                     fill: true,
                     tension: 0.4,
                     pointBackgroundColor: '#22c98e',
@@ -625,7 +633,7 @@ function renderPriorityChart() {
         type: 'doughnut',
         data: {
             labels: ['High', 'Medium', 'Low'],
-            datasets: [{ data, backgroundColor: ['#f04b6b', '#f5a623', '#22c98e'], borderWidth: 0, hoverOffset: 6 }]
+            datasets: [{ data, backgroundColor: ['#e8415f', '#e09213', '#16a96e'], borderWidth: 0, hoverOffset: 6 }]
         },
         options: {
             responsive: true,
@@ -641,7 +649,7 @@ function renderCategoryChart() {
     const ctx = canvas.getContext('2d');
     const cats = ['work', 'personal', 'shopping', 'health', 'other'];
     const data = cats.map(c => tasks.filter(t => t.category === c).length);
-    const colors = ['#5b4fcf', '#22c98e', '#f5a623', '#f04b6b', '#7b82a0'];
+    const colors = ['#5b4fcf', '#16a96e', '#e09213', '#e8415f', '#7b82a0'];
     if (categoryChart) categoryChart.destroy();
     categoryChart = new Chart(ctx, {
         type: 'doughnut',
@@ -695,7 +703,7 @@ function renderProductivityScore() {
     const score = Math.round((compRate * 0.4) + (ontimeRate * 0.3) + (highRate * 0.2) + streakBonus * 0.1);
 
     setText('prodScore', score);
-    const grade = score >= 85 ? '🏆 Excellent' : score >= 70 ? '🥇 Great' : score >= 55 ? '🥈 Good' : score >= 40 ? '🥉 Fair' : '📉 Needs Work';
+    const grade = score >= 85 ? '<i class="fas fa-trophy"></i> Excellent' : score >= 70 ? '<i class="fas fa-medal"></i> Great' : score >= 55 ? '<i class="fas fa-star-half-stroke"></i> Good' : score >= 40 ? '<i class="fas fa-thumbs-up"></i> Fair' : '<i class="fas fa-arrow-trend-up"></i> Needs Work';
     setText('prodGrade', grade);
     setText('sb-comp', compRate + '%');
     setText('sb-ontime', ontimeRate + '%');
@@ -819,13 +827,13 @@ function pomoComplete() {
             $$('.pomo-tab').forEach(t => t.classList.remove('active'));
             document.querySelector('[data-mode="short"]').classList.add('active');
         }
-        showToastMsg('🍅 Pomodoro complete! Take a break.');
+        showToastMsg('Pomodoro complete! Take a break.');
         spawnConfetti();
     } else {
         pomoMode = 'work';
         $$('.pomo-tab').forEach(t => t.classList.remove('active'));
         document.querySelector('[data-mode="work"]').classList.add('active');
-        showToastMsg('☕ Break over! Time to focus.');
+        showToastMsg('Break over! Time to focus.');
     }
     pomoSecondsLeft = pomoDurations[pomoMode]();
     updatePomoDisplay();
@@ -961,7 +969,7 @@ $('closeShortcuts').addEventListener('click', () => $('shortcutsPanel').classLis
 // ===== CONFETTI =====
 function spawnConfetti() {
     const container = $('confettiCanvas');
-    const colors = ['#5b4fcf', '#22c98e', '#f5a623', '#f04b6b', '#7b6fe8'];
+    const colors = ['#5b4fcf', '#7b6fe8', '#16a96e', '#e8415f', '#e09213'];
     for (let i = 0; i < 30; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
@@ -1006,16 +1014,19 @@ function isDueToday(t) {
 }
 
 function priorityColor(p) {
-    return p === 'high' ? '#f04b6b' : p === 'medium' ? '#f5a623' : '#22c98e';
+    return p === 'high' ? 'var(--danger)' : p === 'medium' ? 'var(--warning)' : 'var(--success)';
 }
 
 function getPrioLabel(p) {
-    return p === 'high' ? '🔴 High' : p === 'medium' ? '🟡 Medium' : '🟢 Low';
+    const icons = { high: 'fa-circle-exclamation', medium: 'fa-circle-minus', low: 'fa-circle-check' };
+    const labels = { high: 'High', medium: 'Medium', low: 'Low' };
+    return `<i class="fas ${icons[p] || 'fa-circle'}"></i>${labels[p] || p}`;
 }
 
 function getCatLabel(c) {
-    const icons = { work:'💼', personal:'🏠', shopping:'🛒', health:'💪', other:'📌' };
-    return `${icons[c] || '📌'} ${c.charAt(0).toUpperCase() + c.slice(1)}`;
+    const icons = { work: 'fa-briefcase', personal: 'fa-house', shopping: 'fa-cart-shopping', health: 'fa-heart-pulse', other: 'fa-tag' };
+    const label = c.charAt(0).toUpperCase() + c.slice(1);
+    return `<i class="fas ${icons[c] || 'fa-tag'}"></i>${label}`;
 }
 
 function setDefaultDate() {
