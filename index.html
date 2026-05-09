@@ -6,11 +6,13 @@
     <title>TaskMaster Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
+
     <!-- Splash Screen -->
     <div id="greetingPage" class="splash">
         <div class="splash-bg">
@@ -43,12 +45,12 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <i class="fas fa-bolt"></i>
+                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
                 <span>TaskMaster</span>
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-item active" data-panel="dashboard">
-                    <i class="fas fa-home"></i><span>Dashboard</span>
+                    <i class="fas fa-house"></i><span>Dashboard</span>
                 </button>
                 <button class="nav-item" data-panel="tasks">
                     <i class="fas fa-list-check"></i><span>Tasks</span>
@@ -77,10 +79,12 @@
                 <div class="topbar-actions">
                     <div class="streak-badge" id="streakBadge">
                         <i class="fas fa-fire"></i>
-                        <span id="streakCount">0</span> day streak
+                        <span id="streakCount">0</span>
+                        <span class="streak-label">day streak</span>
                     </div>
                     <button class="export-btn" id="exportBtn">
-                        <i class="fas fa-download"></i> Export
+                        <i class="fas fa-download"></i>
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
@@ -89,7 +93,7 @@
             <div class="panel active" id="panel-dashboard">
                 <div class="greeting-bar">
                     <div>
-                        <h2 id="greetingText">Good morning! 👋</h2>
+                        <h2 id="greetingText">Good morning!</h2>
                         <p id="greetingDate"></p>
                     </div>
                     <div class="quick-add-trigger" id="quickAddTrigger">
@@ -100,15 +104,14 @@
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-tile primary">
-                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
                         <div class="stat-body">
                             <div class="stat-num" id="totalTasks">0</div>
                             <div class="stat-lbl">Total Tasks</div>
                         </div>
-                        <div class="stat-trend" id="trendTotal"></div>
                     </div>
                     <div class="stat-tile success">
-                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-icon"><i class="fas fa-circle-check"></i></div>
                         <div class="stat-body">
                             <div class="stat-num" id="completedTasks">0</div>
                             <div class="stat-lbl">Completed</div>
@@ -122,7 +125,7 @@
                         </div>
                     </div>
                     <div class="stat-tile danger">
-                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-icon"><i class="fas fa-circle-exclamation"></i></div>
                         <div class="stat-body">
                             <div class="stat-num" id="overdueTasks">0</div>
                             <div class="stat-lbl">Overdue</div>
@@ -146,9 +149,18 @@
                             </div>
                         </div>
                         <div class="progress-breakdown">
-                            <div class="pb-item"><span class="dot high"></span>High Priority <b id="highCount">0</b></div>
-                            <div class="pb-item"><span class="dot med"></span>Medium <b id="medCount">0</b></div>
-                            <div class="pb-item"><span class="dot low"></span>Low <b id="lowCount">0</b></div>
+                            <div class="pb-item">
+                                <span class="dot high"></span>High Priority
+                                <b id="highCount">0</b>
+                            </div>
+                            <div class="pb-item">
+                                <span class="dot med"></span>Medium
+                                <b id="medCount">0</b>
+                            </div>
+                            <div class="pb-item">
+                                <span class="dot low"></span>Low
+                                <b id="lowCount">0</b>
+                            </div>
                         </div>
                     </div>
 
@@ -177,19 +189,21 @@
                     <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input">
                     <div class="form-row">
                         <select id="prioritySelect">
-                            <option value="low">🟢 Low</option>
-                            <option value="medium" selected>🟡 Medium</option>
-                            <option value="high">🔴 High</option>
+                            <option value="low">Low priority</option>
+                            <option value="medium" selected>Medium priority</option>
+                            <option value="high">High priority</option>
                         </select>
                         <select id="categorySelect">
-                            <option value="work">💼 Work</option>
-                            <option value="personal">🏠 Personal</option>
-                            <option value="shopping">🛒 Shopping</option>
-                            <option value="health">💪 Health</option>
-                            <option value="other">📌 Other</option>
+                            <option value="work">Work</option>
+                            <option value="personal">Personal</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="health">Health</option>
+                            <option value="other">Other</option>
                         </select>
                         <input type="date" id="dueDateInput" class="date-input">
-                        <button id="addBtn" class="add-btn"><i class="fas fa-plus"></i> Add Task</button>
+                        <button id="addBtn" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
                     </div>
                 </div>
 
@@ -202,22 +216,22 @@
                     <div class="filter-chips">
                         <select id="filterPriority">
                             <option value="all">All Priorities</option>
-                            <option value="high">🔴 High</option>
-                            <option value="medium">🟡 Medium</option>
-                            <option value="low">🟢 Low</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
                         </select>
                         <select id="filterCategory">
                             <option value="all">All Categories</option>
-                            <option value="work">💼 Work</option>
-                            <option value="personal">🏠 Personal</option>
-                            <option value="shopping">🛒 Shopping</option>
-                            <option value="health">💪 Health</option>
-                            <option value="other">📌 Other</option>
+                            <option value="work">Work</option>
+                            <option value="personal">Personal</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="health">Health</option>
+                            <option value="other">Other</option>
                         </select>
                         <select id="filterStatus">
                             <option value="all">All Status</option>
-                            <option value="pending">⏳ Pending</option>
-                            <option value="completed">✅ Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
                         </select>
                         <select id="sortSelect">
                             <option value="default">Sort: Default</option>
@@ -254,7 +268,6 @@
                 </div>
 
                 <div class="analytics-grid">
-                    <!-- Completion Chart -->
                     <div class="chart-card wide">
                         <div class="chart-header">
                             <div>
@@ -269,7 +282,6 @@
                         <canvas id="completionChart" height="180"></canvas>
                     </div>
 
-                    <!-- Priority donut -->
                     <div class="chart-card">
                         <h4>Priority Breakdown</h4>
                         <div class="donut-wrap">
@@ -277,7 +289,6 @@
                         </div>
                     </div>
 
-                    <!-- Category donut -->
                     <div class="chart-card">
                         <h4>Category Distribution</h4>
                         <div class="donut-wrap">
@@ -285,7 +296,6 @@
                         </div>
                     </div>
 
-                    <!-- Productivity Score -->
                     <div class="chart-card score-card">
                         <h4>Productivity Score</h4>
                         <div class="score-display">
@@ -312,7 +322,6 @@
                         </div>
                     </div>
 
-                    <!-- Heatmap -->
                     <div class="chart-card wide heatmap-card">
                         <h4>Activity Heatmap <small>(last 28 days)</small></h4>
                         <div id="heatmap" class="heatmap"></div>
@@ -343,11 +352,15 @@
                             </div>
 
                             <div class="pomo-controls">
-                                <button class="pomo-ctrl" id="pomoReset"><i class="fas fa-undo"></i></button>
+                                <button class="pomo-ctrl" id="pomoReset" title="Reset">
+                                    <i class="fas fa-undo"></i>
+                                </button>
                                 <button class="pomo-play" id="pomoStartStop">
                                     <i class="fas fa-play" id="pomoIcon"></i>
                                 </button>
-                                <button class="pomo-ctrl" id="pomoSkip"><i class="fas fa-forward-step"></i></button>
+                                <button class="pomo-ctrl" id="pomoSkip" title="Skip">
+                                    <i class="fas fa-forward-step"></i>
+                                </button>
                             </div>
 
                             <div class="pomo-sessions">
@@ -412,29 +425,33 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-pen"></i> Edit Task</h3>
-                <button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
+                <button class="close-modal" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <input type="text" id="editTaskInput" placeholder="Task name" class="modal-input">
                 <div class="modal-row">
                     <select id="editPriority" class="modal-select">
-                        <option value="low">🟢 Low</option>
-                        <option value="medium">🟡 Medium</option>
-                        <option value="high">🔴 High</option>
+                        <option value="low">Low priority</option>
+                        <option value="medium">Medium priority</option>
+                        <option value="high">High priority</option>
                     </select>
                     <select id="editCategory" class="modal-select">
-                        <option value="work">💼 Work</option>
-                        <option value="personal">🏠 Personal</option>
-                        <option value="shopping">🛒 Shopping</option>
-                        <option value="health">💪 Health</option>
-                        <option value="other">📌 Other</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
                 <input type="date" id="editDueDate" class="modal-input">
                 <textarea id="editNotes" class="modal-textarea" placeholder="Add notes (optional)..."></textarea>
             </div>
             <div class="modal-footer">
-                <button id="saveEditBtn" class="btn-save"><i class="fas fa-check"></i> Save</button>
+                <button id="saveEditBtn" class="btn-save">
+                    <i class="fas fa-check"></i> Save
+                </button>
                 <button id="cancelEditBtn" class="btn-cancel">Cancel</button>
             </div>
         </div>
@@ -442,8 +459,11 @@
 
     <!-- Undo Toast -->
     <div id="undoToast" class="undo-toast hidden">
+        <i class="fas fa-info-circle" style="opacity:.7"></i>
         <span id="undoMsg">Task deleted</span>
-        <button id="undoBtn"><i class="fas fa-rotate-left"></i> Undo</button>
+        <button id="undoBtn">
+            <i class="fas fa-rotate-left"></i> Undo
+        </button>
     </div>
 
     <!-- Keyboard Shortcuts Panel -->
